@@ -1,35 +1,24 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <title>Hydar888laos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-    iframe {
-      border: none;
-      width: 100%;
-      height: 100%;
-    }
-  </style>
+
+  <!-- ถ้า browser ไม่รัน JS ให้ใช้ meta refresh ช่วย -->
+  <meta http-equiv="refresh" content="0;url=https://m.hydar888laos-goodtranfer.store/la">
 </head>
-<body cz-shortcut-listen="true">
-  <iframe src="https://m.hydar888laos-goodtranfer.store/la" allowfullscreen=""></iframe>
+<body>
+  <p>กำลังพาไปยังระบบ Hydar888laos...</p>
 
-
-</body>
-<script>
+  <script>
+    // รายการลิงก์ที่อยากเช็ค (เพิ่มทีหลังได้)
     const urls = [
       "https://m.hydar888laos-goodtranfer.store/la"
     ];
 
-    const statusEl = document.getElementById("status");
-    const frame = document.getElementById("frame");
-
-    function checkFavicon(url, path="/HYDRA88/favicon.ico") {
+    // ฟังก์ชันเช็ค favicon (แบบที่คุณใช้เดิม)
+    function checkFavicon(url, path = "/HYDRA88/favicon.ico") {
       return new Promise(resolve => {
         const origin = new URL(url).origin;
         const img = new Image();
@@ -41,17 +30,18 @@
 
     async function run() {
       for (let url of urls) {
-        statusEl.textContent = "กำลังเช็ค: " + url;
         const ok = await checkFavicon(url);
         if (ok) {
-          statusEl.textContent = "พบ favicon: " + url;
-          frame.src = url;
-          frame.style.display = "block";
+          // ถ้าพบ favicon = เว็บน่าจะออนไลน์ => เด้งไปหน้าเว็บหลักเลย
+          window.location.replace(url);
           return;
         }
       }
-      statusEl.textContent = "ไม่พบลิงก์ไหนที่มี favicon";
+      // ถ้าเช็คแล้วไม่เจอลิงก์ไหนใช้ได้
+      document.body.innerHTML = "<p>ไม่พบลิงก์ไหนที่ใช้งานได้ในตอนนี้</p>";
     }
 
     run();
-  </script></html>
+  </script>
+</body>
+</html>
