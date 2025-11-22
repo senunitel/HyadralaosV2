@@ -1,47 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Hydar888laos</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- ถ้า browser ไม่รัน JS ให้ใช้ meta refresh ช่วย -->
-  <meta http-equiv="refresh" content="0;url=https://m.hydar888laos-goodtranfer.store/la">
-</head>
 <body>
-  <p>กำลังพาไปยังระบบ Hydar888laos...</p>
+  <div id="status">กำลังเช็คลิงก์...</div>
+  <iframe id="frame" src="" allowfullscreen style="display:none;"></iframe>
 
   <script>
-    // รายการลิงก์ที่อยากเช็ค (เพิ่มทีหลังได้)
     const urls = [
       "https://m.hydar888laos-goodtranfer.store/la"
     ];
 
-    // ฟังก์ชันเช็ค favicon (แบบที่คุณใช้เดิม)
-    function checkFavicon(url, path = "/HYDRA88/favicon.ico") {
+    const statusEl = document.getElementById("status");
+    const frame = document.getElementById("frame");
+
+    function checkFavicon(url, path="/HYDRA88/favicon.ico") {
       return new Promise(resolve => {
         const origin = new URL(url).origin;
         const img = new Image();
         img.onload = () => resolve(true);
         img.onerror = () => resolve(false);
-        img.src = origin + path + "?t=" + Date.now(); // กัน cache
+        img.src = origin + path + "?t=" + Date.now();
       });
     }
 
     async function run() {
       for (let url of urls) {
+        statusEl.textContent = "กำลังเช็ค: " + url;
         const ok = await checkFavicon(url);
         if (ok) {
-          // ถ้าพบ favicon = เว็บน่าจะออนไลน์ => เด้งไปหน้าเว็บหลักเลย
-          window.location.replace(url);
+          statusEl.textContent = "พบ favicon: " + url;
+          frame.src = url;
+          frame.style.display = "block";
+
+          // ถ้าโดนบล็อค iframe ให้ fallback เด้งไปลิงก์หลัก
+          setTimeout(() => {
+            try {
+              // ถ้า iframe ถูกบล็อค มักจะ access contentWindow ไม่ได้หรือว่าง
+              if (!frame.contentWindow || frame.contentWindow.length === 0) {
+                window.location.replace(url);
+              }
+            } catch (e) {
+              // กรณีโดน security block
+              window.location.replace(url);
+            }
+          }, 1500);
+
           return;
         }
       }
-      // ถ้าเช็คแล้วไม่เจอลิงก์ไหนใช้ได้
-      document.body.innerHTML = "<p>ไม่พบลิงก์ไหนที่ใช้งานได้ในตอนนี้</p>";
+      statusEl.textContent = "ไม่พบลิงก์ไหนที่มี favicon";
     }
 
     run();
   </script>
 </body>
-</html>
